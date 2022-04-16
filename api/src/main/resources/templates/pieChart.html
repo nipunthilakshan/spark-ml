@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="ISO-8859-1" />
+    <title>PIE</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+    <!-- Optional theme -->
+    <link rel="stylesheet"
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" />
+</head>
+<style>
+    h1 {text-align: center;}
+    p {text-align: center;}
+    div {text-align: center;}
+</style>
+<body>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-3d.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<div>
+    <div class="row">
+        <h1>Lyrics Prediction</h1>
+    </div>
+    <div class="row">
+<!--        <div class="col-md-1"></div>-->
+        <div class="col-md-6">
+            <div id="columnChartProb" style="width:100%;height: 600px"></div>
+        </div>
+<!--        <div class="col-md-1"></div>-->
+        <div class="col-md-6">
+            <div id="pieProb" style="width:100%;height: 600px"></div>
+        </div>
+    </div>
+    <div class="row"></div>
+    <div class="row"></div>
+    <div class="row" align="center" style="margin: 5px;">
+<!--        <div class="col-md-1"></div>-->
+        <div class="col-md-6">
+            <div class="row" >
+                <div class="col-md-12"  >
+                    <div id="submitAnotherLyric" style="margin-top: 50px">
+                        <a style="50px 10px" class="btn btn-primary" href="/home">Add your lyrics</a>
+                    </div>
+                </div>
+            </div>
+            <div  id="predication">
+                <table class="table table-striped table-responsive-md">
+                    <tbody align="left">
+                    <tr><p style="font-weight: bold;" text-aligh="left" th:text="'Genre: ' + ${Genre}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Metal: ' + ${metalProbability}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Pop: ' + ${popProbability}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Blues: ' + ${bluesProbability}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Country: ' + ${countryProbability}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Hip hop: ' + ${hiphopProbability}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Jazz: ' + ${jazzProbability}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Reggae: ' + ${reggaeProbability}" /></tr>
+                    <tr><p style="font-weight: bold;" align="left" th:text="'Rock: ' + ${rockProbability}" /></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+</div>
+<script th:inline="javascript">
+    Highcharts.chart('pieProb', {
+        chart : {
+            type : 'pie',
+            options3d : {
+                enabled : true,
+                alpha : 20,
+                beta : 0
+            }
+        },
+        title : {
+            text : 'Genre Distribution'
+        },
+        tooltip : {
+            pointFormat : '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions : {
+            pie : {
+                allowPointSelect : true,
+                cursor : 'pointer',
+                depth : 35,
+                dataLabels : {
+                    enabled : true,
+                    format : '{point.name}'
+                }
+            }
+        },
+        legend: {
+            enabled: true
+        },
+        series : [ {
+            type : 'pie',
+            name : 'Ratio',
+            data : [ [ 'Pop', [[${popProbability}]] ], [ 'Country', [[${countryProbability}]] ] , [ 'Blues', [[${bluesProbability}]] ] , [ 'Jazz', [[${jazzProbability}]] ] ,
+                [ 'Reggae', [[${reggaeProbability}]] ] , [ 'Rock', [[${rockProbability}]] ] , [ 'Hiphop', [[${hiphopProbability}]] ], ['Metal', [[${metalProbability}]]] ]
+        } ]
+    });
+
+    Highcharts.chart('columnChartProb', {
+        chart: {
+            type: 'column'
+        },
+        title: {
+            text: 'Prediction Results'
+        },
+        subtitle: {
+            text: 'The predicted lyrics probability values'
+        },
+        xAxis: {
+            categories: [[${lyricTypes}]],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            max: 1,
+            title: {
+                text: 'Probability'
+            }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.3f} </b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series: [{
+            name: 'Genre',
+            data: [[${lyricValues}]]
+        }]
+    });
+</script>
+</body>
+</html>
